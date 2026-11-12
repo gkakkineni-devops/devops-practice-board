@@ -20,16 +20,18 @@ Disks that no longer have a server, public IPs that point at nothing and snapsho
 
 ## What I built
 
-So far, the first two of eight pull requests are merged:
+So far, the first four of eight pull requests are merged:
 
 - The four rules as plain functions with no AWS inside: unattached EBS volumes, unassociated Elastic IPs, snapshots older than 90 days and instances missing an owner or project tag. Each one takes the data boto3 returns and gives back findings with an estimated monthly cost.
 - The JSON report: the estimated total, a count per kind, and the findings with the most expensive first.
+- The one file that talks to AWS. Every function takes the client as an argument, so the tests hand in a fake one. Settings come from environment variables, the way Lambda is configured.
+- The Lambda handler, and a command line entry point that runs the same scan from a laptop and only prints.
 
-Still to come: the AWS calls and the Lambda handler, CI, the Terraform, Terraform checks and Dependabot, and the README.
+Still to come: CI, the Terraform, Terraform checks and Dependabot, and the README.
 
 ## How I know it works
 
-Only on my laptop so far. 18 unit tests pass and ruff is clean, and I checked that breaking the snapshot age rule on purpose makes a test fail. There is no CI yet, so the board shows no pipeline result for this one, and nothing has run on a real AWS account.
+Only on my laptop so far. 26 unit tests pass and ruff is clean, and I checked that breaking the snapshot age rule on purpose makes a test fail. One more test runs the real boto3 calls against moto, a pretend AWS, and it has not been run yet. There is no CI yet, so the board shows no pipeline result for this one, and nothing has run on a real AWS account.
 
 ## What went wrong on the way
 
@@ -37,7 +39,7 @@ Nothing has broken yet. The Terraform and the security scan have never run, so I
 
 ## What it doesn't do yet
 
-- It doesn't talk to AWS or deploy anything yet. The handler, Terraform, CI and README are still to come.
+- It isn't deployed anywhere yet. The Terraform, CI and README are still to come.
 - It will only ever read. Cleaning up would need a dry run mode and a way to undo it.
 - One region per run, and the prices are typed in as rough us-east-1 numbers.
 
