@@ -16,7 +16,7 @@ My portfolio shows this backlog as a live board: [gkakkineni-devops.github.io/pr
 | 001 | [A bad release reaches every user](problems/001-bad-release-reaches-everyone.md) | Done | Delivery | [gitops-canary-rollouts](https://github.com/gkakkineni-devops/gitops-canary-rollouts) |
 | 002 | [Alerts nobody trusts](problems/002-alerts-nobody-trusts.md) | Done | Observability | [observability-stack](https://github.com/gkakkineni-devops/observability-stack) |
 | 003 | [GPU nodes burn money while idle](problems/003-gpu-nodes-burn-money.md) | Done | Cost | [terraform-aws-eks-gpu](https://github.com/gkakkineni-devops/terraform-aws-eks-gpu) |
-| 004 | [Nobody knows what is wasting money in AWS](problems/004-idle-aws-resources.md) | Building | Cost | [aws-idle-resource-finder](https://github.com/gkakkineni-devops/aws-idle-resource-finder) |
+| 004 | [Nobody knows what is wasting money in AWS](problems/004-idle-aws-resources.md) | Done | Cost | [aws-idle-resource-finder](https://github.com/gkakkineni-devops/aws-idle-resource-finder) |
 | 005 | [Secrets end up in commits](problems/005-secrets-in-commits.md) | Open | Security |  |
 | 006 | [Terraform drifts from reality](problems/006-terraform-drift.md) | Open | Infrastructure |  |
 | 007 | [The pipeline takes too long](problems/007-slow-pipeline.md) | Open | Delivery |  |

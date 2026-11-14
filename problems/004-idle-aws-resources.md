@@ -1,7 +1,7 @@
 ---
 id: 004
 title: Nobody knows what is wasting money in AWS
-status: building
+status: done
 area: Cost
 repo: aws-idle-resource-finder
 site_page:
@@ -20,35 +20,25 @@ Disks that no longer have a server, public IPs that point at nothing and snapsho
 
 ## What I built
 
-So far, the first four of eight pull requests are merged:
-
-- The four rules as plain functions with no AWS inside: unattached EBS volumes, unassociated Elastic IPs, snapshots older than 90 days and instances missing an owner or project tag. Each one takes the data boto3 returns and gives back findings with an estimated monthly cost.
-- The JSON report: the estimated total, a count per kind, and the findings with the most expensive first.
-- The one file that talks to AWS. Every function takes the client as an argument, so the tests hand in a fake one. Settings come from environment variables, the way Lambda is configured.
-- The Lambda handler, and a command line entry point that runs the same scan from a laptop and only prints.
-
-Still to come: CI, the Terraform, Terraform checks and Dependabot, and the README.
+- Four rules written as plain functions with no AWS inside: unattached EBS volumes, unassociated Elastic IPs, snapshots older than 90 days and instances missing an owner or project tag. Each one takes the data boto3 returns and gives back findings with an estimated monthly cost. The snapshot rule takes the current time as an argument, so a test can pick any date.
+- A report with the estimated monthly total, a count per kind and the findings sorted most expensive first.
+- One file that talks to AWS. Every function takes the client as an argument, so the tests pass in a fake one. Settings come from environment variables, the way Lambda is configured.
+- A Lambda handler, and a command line entry point that runs the same scan from a laptop and only prints.
+- Terraform for the function, an IAM role that can read four kinds of EC2 resources and write to one folder of one bucket, a private encrypted S3 bucket that expires old reports, a log group with a retention period, and a weekly EventBridge schedule. Nothing in the role can delete or change a resource.
+- CI with Dependabot, built over eight small pull requests, one issue each.
 
 ## How I know it works
 
-Only on my laptop so far. 26 unit tests pass and ruff is clean, and I checked that breaking the snapshot age rule on purpose makes a test fail. One more test runs the real boto3 calls against moto, a pretend AWS, and it has not been run yet. There is no CI yet, so the board shows no pipeline result for this one, and nothing has run on a real AWS account.
+Partly. Every push runs ruff and 27 unit tests, one of which runs the real boto3 calls against moto, a pretend AWS. A second CI job runs a Trivy scan of the Terraform, `terraform fmt`, `init` and `validate` against the real AWS provider, and tflint. All of that is green. What I have not done is run it against a real AWS account, so I haven't seen a real report from a real account. The README says so and leaves those three boxes unticked.
 
 ## What went wrong on the way
 
-Nothing has broken yet. The Terraform and the security scan have never run, so I expect something there, and I'll write down what happens.
+Nothing failed in CI. Every job was green the first time it ran, including the Terraform checks and the moto test, which I had never run before. That means this ticket has no breakage to report. The first thing I'd expect to go wrong on a real deploy is a permission or a setting that only a live account shows up.
 
 ## What it doesn't do yet
 
-- It isn't deployed anywhere yet. The Terraform, CI and README are still to come.
-- It will only ever read. Cleaning up would need a dry run mode and a way to undo it.
-- One region per run, and the prices are typed in as rough us-east-1 numbers.
-
-## Done when
-
-
-- A Lambda function finds unattached EBS volumes, unassociated Elastic IPs, old snapshots and EC2 instances that are missing an owner or project tag.
-- The rules are plain functions with tests, so they run without an AWS account.
-- Every finding has an estimated monthly cost, and the README says the prices are estimates.
-- The IAM role can only read EC2 and write to one folder of one S3 bucket. Nothing can delete or change a resource.
-- Terraform deploys the function, the bucket, the logs and a weekly schedule, and CI checks the Terraform.
-- I have run it once in a real AWS account and destroyed it afterwards, or the README says that I haven't.
+- It has never run on a real AWS account. A real run, with a billing alarm set first and everything destroyed afterwards, is still to do.
+- It only reports. Cleaning up would need a dry run mode, an opt-in tag and a way to undo it.
+- One region per deployment, and it doesn't look at CPU use, so an instance that is attached but idle isn't found.
+- The prices are typed-in constants for us-east-1, with one flat price for every volume type.
+- Terraform state is local. A team would keep it in S3 with locking.
