@@ -6,7 +6,7 @@ A backlog of DevOps problems that I work through, one small tested project at a 
 
 The tickets are written as if they came from the platform team of a made-up online shop. The shop is invented and so are the requests. The problems are the kind real teams have, and the code, tests and pipelines behind the finished ones are real. Nothing here comes from a job.
 
-My portfolio shows this backlog as a live board: [gkakkineni-devops.github.io/practice](https://gkakkineni-devops.github.io/practice/).
+My portfolio shows this backlog as a live board: [gkakkineni.dev/practice](https://gkakkineni.dev/practice/).
 
 ## The board
 
